@@ -31,11 +31,14 @@ class TransactionPool:
     def run(self) -> bool:
         """Main execution method."""
         try:
+            # Log the start of the main processing
             self.logger.info("Starting TransactionPool processing")
+            
             # Add your main logic here
             self.logger.info("Processing completed successfully")
             return True
         except Exception as e:
+            # Log any errors that occur during processing
             self.logger.error("Processing failed: %s", str(e), exc_info=self.verbose)
             return False
 
@@ -44,6 +47,15 @@ def main():
     parser = argparse.ArgumentParser(description="TransactionPool - A powerful utility")
     parser.add_argument('-v', '--verbose', action='store_true', help='Enable verbose logging')
     args = parser.parse_args()
+    
+    # Create a logger instance with the same verbosity as the command line argument
+    app_logger = logging.getLogger('app')
+    app_logger.setLevel(logging.DEBUG if args.verbose else logging.INFO)
+    handler = logging.StreamHandler()
+    handler.setFormatter(logging.Formatter(
+        '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    ))
+    app_logger.addHandler(handler)
     
     app = TransactionPool(verbose=args.verbose)
     if not app.run():
